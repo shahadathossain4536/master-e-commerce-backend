@@ -11,5 +11,9 @@ app.use(cors());
 
 app.use('/v1', ProductRouter);
 app.use('/v1', OrdersRouter);
+const getAController = (req: Request, res: Response) => {
+  res.send('Server Start');
+};
 
+app.get('/', getAController);
 export default app;
