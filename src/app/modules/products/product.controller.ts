@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ProductService } from './product.service';
-import productSchema from './products.validation';
+import { partialProductSchema, productSchema } from './products.validation';
 
 const addProduct = async (req: Request, res: Response) => {
   try {
@@ -24,11 +24,17 @@ const addProduct = async (req: Request, res: Response) => {
 };
 const getAllProduct = async (req: Request, res: Response) => {
   try {
-    const result = await ProductService.getAllProductDB();
+    const { searchTerm } = req.query;
+
+    const result = await ProductService.getAllProductDB(
+      searchTerm as string | undefined,
+    );
 
     res.status(200).json({
       success: true,
-      message: 'Product fetched successfully!',
+      message: searchTerm
+        ? `Products matching search term '${searchTerm}' fetched successfully!`
+        : 'All products fetched successfully!',
       data: result,
     });
   } catch (error: any) {
@@ -36,14 +42,12 @@ const getAllProduct = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || 'Internal server error',
-      error: error,
     });
   }
 };
 const getSingleProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    console.log('productId', productId);
 
     const result = await ProductService.getSingleProductDB(productId);
 
@@ -61,27 +65,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
     });
   }
 };
-const searchProduct = async (req: Request, res: Response) => {
-  try {
-    const { searchTerm } = req.query;
-    const result = await ProductService.searchProductDB(searchTerm as string);
 
-    res.status(200).json({
-      success: true,
-      message: 'Product deleted successfully!',
-      data: result,
-    });
-  } catch (error: any) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message:
-        error.message ||
-        `Products matching search term '${searchTerm}' fetched successfully!`,
-      error: error,
-    });
-  }
-};
 const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
@@ -107,5 +91,4 @@ export const ProductController = {
   getAllProduct,
   getSingleProduct,
   deleteProduct,
-  searchProduct,
 };

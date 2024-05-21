@@ -1,13 +1,25 @@
 import ProductModel from './product.model';
-import { Product } from './products.interface';
+
 import mongoose from 'mongoose';
-const addProductDB = async (product: Product) => {
+import { TProduct } from './products.interface';
+import { partialProductSchema } from './products.validation';
+
+const addProductDB = async (product: TProduct) => {
   const result = await ProductModel.create(product);
   return result;
 };
 
-const getAllProductDB = async () => {
-  const result = await ProductModel.find();
+const getAllProductDB = async (searchTerm?: string) => {
+  let query = {};
+
+  if (searchTerm) {
+    const regex = new RegExp(searchTerm, 'i'); // 'i' for case insensitive search
+    query = {
+      $or: [{ name: regex }, { description: regex }],
+    };
+  }
+
+  const result = await ProductModel.find(query);
   return result;
 };
 const getSingleProductDB = async (productId: string) => {
@@ -20,14 +32,10 @@ const deleteProductDB = async (productId: string) => {
   const result = await ProductModel.deleteOne({ _id: objectId });
   return result;
 };
-const searchProductDB = async (searchTerm: string) => {
-  const result = await ProductModel.find({ name: searchTerm });
-  return result;
-};
+
 export const ProductService = {
   addProductDB,
   getAllProductDB,
   getSingleProductDB,
   deleteProductDB,
-  searchProductDB,
 };

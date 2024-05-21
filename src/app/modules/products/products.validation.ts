@@ -26,4 +26,6 @@ const productSchema = z.object({
   inventory: inventorySchema,
 });
 
-export default productSchema;
+const partialProductSchema = productSchema.partial();
+
+export { productSchema, partialProductSchema };

@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Define the Zod schema for Orders
 const orderSchema = z.object({
   email: z
     .string()
