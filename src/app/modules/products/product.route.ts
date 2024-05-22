@@ -8,5 +8,5 @@ router.get('/api/products', ProductController.getAllProduct);
 router.get('/api/products/:productId', ProductController.getSingleProduct);
 router.delete('/api/products/:productId', ProductController.deleteProduct);
 router.get('/api/products/?searchTerm', ProductController.deleteProduct);
-
+router.put('/api/products/:productId', ProductController.updateProduct);
 export const ProductRouter = router;

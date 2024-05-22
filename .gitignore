@@ -16,7 +16,7 @@ node_modules/
 .env
 
 # Directories for build and output
-dist/
+
 build/
 
 # IDEs and editors
