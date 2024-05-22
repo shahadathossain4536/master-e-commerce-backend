@@ -20,7 +20,7 @@ const updateProductQuantity = async (
     }
 
     if (orderedQuantity > product.inventory.quantity) {
-      throw new Error('Insufficient stock');
+      throw new Error('Insufficient quantity available in inventory');
     }
 
     await ProductModel.findByIdAndUpdate(productId, {

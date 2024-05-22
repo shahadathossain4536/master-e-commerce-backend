@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ProductService } from './product.service';
 import { partialProductSchema, productSchema } from './products.validation';
+
 function isError(error: unknown): error is Error {
   return error instanceof Error;
 }
@@ -45,7 +46,7 @@ const getAllProduct = async (req: Request, res: Response) => {
       success: true,
       message: searchTerm
         ? `Products matching search term '${searchTerm}' fetched successfully!`
-        : 'All products fetched successfully!',
+        : 'Products fetched successfully!',
       data: result,
     });
   } catch (error: unknown) {
@@ -72,7 +73,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: 'Products fetched successfully!',
+      message: 'Product fetched successfully!',
       data: result,
     });
   } catch (error: unknown) {
@@ -95,12 +96,12 @@ const getSingleProduct = async (req: Request, res: Response) => {
 const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    const result = await ProductService.deleteProductDB(productId);
+    await ProductService.deleteProductDB(productId);
 
     res.status(200).json({
       success: true,
       message: 'Product deleted successfully!',
-      data: result,
+      data: null,
     });
   } catch (error: unknown) {
     console.error(error);
@@ -119,6 +120,7 @@ const deleteProduct = async (req: Request, res: Response) => {
     }
   }
 };
+
 const updateProduct = async (req: Request, res: Response) => {
   const { productId } = req.params;
   const productData = req.body;

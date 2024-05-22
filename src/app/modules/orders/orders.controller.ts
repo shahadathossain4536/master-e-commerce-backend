@@ -3,7 +3,6 @@ import orderSchema from './orders.validation';
 import { orderService } from './orders.service';
 import { Orders } from './orders.interface';
 
-// Custom type guard to check if error has 'errors' property
 function isError(error: unknown): error is { errors: unknown } {
   return typeof error === 'object' && error !== null && 'errors' in error;
 }
