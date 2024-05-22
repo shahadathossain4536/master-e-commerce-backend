@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { ProductService } from './product.service';
-import { partialProductSchema, productSchema } from './products.validation';
-
+import { productSchema } from './products.validation';
+function isError(error: unknown): error is Error {
+  return error instanceof Error;
+}
 const addProduct = async (req: Request, res: Response) => {
   try {
     const product = req.body;
@@ -13,15 +15,24 @@ const addProduct = async (req: Request, res: Response) => {
       message: 'Product created successfully!',
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Internal server error',
-      error: error,
-    });
+
+    if (isError(error)) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Internal server error',
+        error: error,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
   }
 };
+
 const getAllProduct = async (req: Request, res: Response) => {
   try {
     const { searchTerm } = req.query;
@@ -37,12 +48,20 @@ const getAllProduct = async (req: Request, res: Response) => {
         : 'All products fetched successfully!',
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Internal server error',
-    });
+
+    if (isError(error)) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Internal server error',
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
   }
 };
 const getSingleProduct = async (req: Request, res: Response) => {
@@ -56,11 +75,18 @@ const getSingleProduct = async (req: Request, res: Response) => {
       message: 'Products fetched successfully!',
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Use 'unknown' instead of 'any'
     console.error(error);
+
+    let errorMessage = 'Product id not found';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
     res.status(500).json({
       success: false,
-      message: error.message || 'Internal server error',
+      message: errorMessage,
       error: error,
     });
   }
@@ -74,15 +100,23 @@ const deleteProduct = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'Product deleted successfully!',
-      data: null,
+      data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Product id not found',
-      error: error,
-    });
+
+    if (isError(error)) {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Product id not found',
+        error: error,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
   }
 };
 

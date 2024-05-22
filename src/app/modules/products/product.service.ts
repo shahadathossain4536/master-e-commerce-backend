@@ -2,7 +2,6 @@ import ProductModel from './product.model';
 
 import mongoose from 'mongoose';
 import { TProduct } from './products.interface';
-import { partialProductSchema } from './products.validation';
 
 const addProductDB = async (product: TProduct) => {
   const result = await ProductModel.create(product);
