@@ -23,8 +23,14 @@ const updateProductQuantity = async (
       throw new Error('Insufficient quantity available in inventory');
     }
 
+    const updatedQuantity = product.inventory.quantity - orderedQuantity;
+
+    // Update inventory quantity and set inStock based on the updated quantity
     await ProductModel.findByIdAndUpdate(productId, {
-      $inc: { 'inventory.quantity': -orderedQuantity },
+      $set: {
+        'inventory.quantity': updatedQuantity,
+        'inventory.inStock': updatedQuantity > 0 ? true : false,
+      },
     });
   } catch (error) {
     console.error('Error updating product quantity:', error);
