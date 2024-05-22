@@ -9,8 +9,8 @@ app.use(express.json());
 app.use(cors());
 // Middleware to handle not found routes
 
-app.use('/v1', ProductRouter);
-app.use('/v1', OrdersRouter);
+app.use('/', ProductRouter);
+app.use('/', OrdersRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Server Start');
