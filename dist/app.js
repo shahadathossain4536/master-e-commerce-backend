@@ -11,8 +11,8 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 // Middleware to handle not found routes
-app.use('/v1', product_route_1.ProductRouter);
-app.use('/v1', orders_route_1.OrdersRouter);
+app.use('/', product_route_1.ProductRouter);
+app.use('/', orders_route_1.OrdersRouter);
 app.get('/', (req, res) => {
     res.send('Server Start');
 });

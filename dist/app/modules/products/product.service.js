@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductService = void 0;
 const product_model_1 = __importDefault(require("./product.model"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const products_validation_1 = require("./products.validation");
 const addProductDB = (product) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield product_model_1.default.create(product);
     return result;
@@ -40,9 +41,15 @@ const deleteProductDB = (productId) => __awaiter(void 0, void 0, void 0, functio
     const result = yield product_model_1.default.deleteOne({ _id: objectId });
     return result;
 });
+const updateProductDB = (productId, productData) => __awaiter(void 0, void 0, void 0, function* () {
+    const validatedProductData = products_validation_1.partialProductSchema.parse(productData);
+    const updatedProduct = yield product_model_1.default.findByIdAndUpdate(productId, { $set: validatedProductData }, { new: true, runValidators: true });
+    return updatedProduct;
+});
 exports.ProductService = {
     addProductDB,
     getAllProductDB,
     getSingleProductDB,
     deleteProductDB,
+    updateProductDB,
 };

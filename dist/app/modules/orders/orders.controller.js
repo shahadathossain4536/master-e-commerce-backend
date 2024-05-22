@@ -15,8 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
 const orders_validation_1 = __importDefault(require("./orders.validation"));
 const orders_service_1 = require("./orders.service");
-// Custom type guard to check if error has 'errors' property
-function isValidationError(error) {
+function isError(error) {
     return typeof error === 'object' && error !== null && 'errors' in error;
 }
 const addOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,7 +43,7 @@ const addOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: error.message || 'Internal server error',
             });
         }
-        else if (isValidationError(error)) {
+        else if (isError(error)) {
             return res.status(400).json({
                 success: false,
                 message: 'Validation error',
@@ -59,6 +58,27 @@ const addOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 });
+const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.query;
+        const orders = yield orders_service_1.orderService.getAllOrdersDB(email);
+        res.status(200).json({
+            success: true,
+            message: email
+                ? `Orders fetched successfully for user email!`
+                : 'Orders fetched successfully!',
+            data: orders,
+        });
+    }
+    catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        });
+    }
+});
 exports.OrderController = {
     addOrder,
+    getAllOrders,
 };

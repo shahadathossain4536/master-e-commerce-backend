@@ -51,7 +51,7 @@ const getAllProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             success: true,
             message: searchTerm
                 ? `Products matching search term '${searchTerm}' fetched successfully!`
-                : 'All products fetched successfully!',
+                : 'Products fetched successfully!',
             data: result,
         });
     }
@@ -77,7 +77,7 @@ const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const result = yield product_service_1.ProductService.getSingleProductDB(productId);
         res.status(200).json({
             success: true,
-            message: 'Products fetched successfully!',
+            message: 'Product fetched successfully!',
             data: result,
         });
     }
@@ -98,11 +98,11 @@ const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { productId } = req.params;
-        const result = yield product_service_1.ProductService.deleteProductDB(productId);
+        yield product_service_1.ProductService.deleteProductDB(productId);
         res.status(200).json({
             success: true,
             message: 'Product deleted successfully!',
-            data: result,
+            data: null,
         });
     }
     catch (error) {
@@ -122,9 +122,44 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
 });
+const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { productId } = req.params;
+    const productData = req.body;
+    try {
+        const validatedProductData = products_validation_1.partialProductSchema.parse(productData);
+        const updatedProduct = yield product_service_1.ProductService.updateProductDB(productId, validatedProductData);
+        if (!updatedProduct) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found',
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Product updated successfully!',
+            data: updatedProduct,
+        });
+    }
+    catch (error) {
+        if (isError(error)) {
+            res.status(500).json({
+                success: false,
+                message: error.message || 'Internal server error',
+                error: error,
+            });
+        }
+        else {
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+            });
+        }
+    }
+});
 exports.ProductController = {
     addProduct,
     getAllProduct,
     getSingleProduct,
     deleteProduct,
+    updateProduct,
 };

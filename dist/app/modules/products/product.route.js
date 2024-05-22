@@ -11,5 +11,5 @@ router.post('/api/products', product_controller_1.ProductController.addProduct);
 router.get('/api/products', product_controller_1.ProductController.getAllProduct);
 router.get('/api/products/:productId', product_controller_1.ProductController.getSingleProduct);
 router.delete('/api/products/:productId', product_controller_1.ProductController.deleteProduct);
-router.get('/api/products/?searchTerm', product_controller_1.ProductController.deleteProduct);
+router.put('/api/products/:productId', product_controller_1.ProductController.updateProduct);
 exports.ProductRouter = router;

@@ -27,10 +27,15 @@ const updateProductQuantity = (productId, orderedQuantity) => __awaiter(void 0, 
             throw new Error('Product not found');
         }
         if (orderedQuantity > product.inventory.quantity) {
-            throw new Error('Insufficient stock');
+            throw new Error('Insufficient quantity available in inventory');
         }
+        const updatedQuantity = product.inventory.quantity - orderedQuantity;
+        // Update inventory quantity and set inStock based on the updated quantity
         yield product_model_1.default.findByIdAndUpdate(productId, {
-            $inc: { 'inventory.quantity': -orderedQuantity },
+            $set: {
+                'inventory.quantity': updatedQuantity,
+                'inventory.inStock': updatedQuantity > 0 ? true : false,
+            },
         });
     }
     catch (error) {
@@ -52,6 +57,18 @@ const addOrderDB = (orderData) => __awaiter(void 0, void 0, void 0, function* ()
     const result = yield order.save();
     return result;
 });
+const getAllOrdersDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    let query = {};
+    if (email) {
+        const regex = new RegExp(email, 'i');
+        query = {
+            $or: [{ email: regex }],
+        };
+    }
+    const orders = yield orders_model_1.default.find(query);
+    return orders;
+});
 exports.orderService = {
     addOrderDB,
+    getAllOrdersDB,
 };
