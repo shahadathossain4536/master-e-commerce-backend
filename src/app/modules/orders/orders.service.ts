@@ -50,7 +50,19 @@ const addOrderDB = async (orderData: Orders) => {
   const result = await order.save();
   return result;
 };
+const getAllOrdersDB = async (email?: string) => {
+  let query = {};
 
+  if (email) {
+    const regex = new RegExp(email, 'i');
+    query = {
+      $or: [{ email: regex }],
+    };
+  }
+  const orders = await OrderModel.find(query);
+  return orders;
+};
 export const orderService = {
   addOrderDB,
+  getAllOrdersDB,
 };

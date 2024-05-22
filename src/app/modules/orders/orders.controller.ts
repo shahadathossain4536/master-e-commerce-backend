@@ -4,7 +4,7 @@ import { orderService } from './orders.service';
 import { Orders } from './orders.interface';
 
 // Custom type guard to check if error has 'errors' property
-function isValidationError(error: unknown): error is { errors: unknown } {
+function isError(error: unknown): error is { errors: unknown } {
   return typeof error === 'object' && error !== null && 'errors' in error;
 }
 
@@ -36,7 +36,7 @@ const addOrder = async (req: Request, res: Response) => {
         success: false,
         message: error.message || 'Internal server error',
       });
-    } else if (isValidationError(error)) {
+    } else if (isError(error)) {
       return res.status(400).json({
         success: false,
         message: 'Validation error',
@@ -50,6 +50,31 @@ const addOrder = async (req: Request, res: Response) => {
     }
   }
 };
+
+const getAllOrders = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.query;
+
+    const orders = await orderService.getAllOrdersDB(
+      email as string | undefined,
+    );
+    res.status(200).json({
+      success: true,
+      message: email
+        ? `Orders fetched successfully for user email!`
+        : 'Orders fetched successfully!',
+      data: orders,
+    });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
 export const OrderController = {
   addOrder,
+  getAllOrders,
 };
