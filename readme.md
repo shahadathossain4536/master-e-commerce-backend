@@ -19,7 +19,7 @@ This project is a backend service for an e-commerce application built with Node.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/master-e-commerce-backend.git
+   git clone https://github.com/shahadathossain4536/master-e-commerce-backend.git
    cd master-e-commerce-backend
    ```
 
@@ -33,6 +33,10 @@ This project is a backend service for an e-commerce application built with Node.
 
    ```plaintext
    MONGODB_URI=<Your MongoDB URI>
+   ```
+
+   ```plaintext
+   PORT=<Your Port>
    ```
 
 4. Build the project:
